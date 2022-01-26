@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.08035642, g: 0.09973976, b: 0.30097708, a: 1}
+  m_IndirectSpecularColor: {r: 0.08049316, g: 0.0998791, b: 0.30126268, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3139,7 +3139,7 @@ MonoBehaviour:
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_RaycastTriggerInteraction: 1
 --- !u!114 &225055828
 MonoBehaviour:
@@ -25227,7 +25227,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1733232875}
   - component: {fileID: 1733232874}
-  - component: {fileID: 1733232873}
   - component: {fileID: 1733232876}
   m_Layer: 0
   m_Name: EventSystem
@@ -25236,33 +25235,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1733232873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1733232872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
-  m_ActionsAsset: {fileID: -944628639613478452, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_PointAction: {fileID: 4215105135095944713, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_MoveAction: {fileID: 3799452553369938353, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_SubmitAction: {fileID: -378109733376925229, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_CancelAction: {fileID: 4303863662694617527, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_LeftClickAction: {fileID: -3566421621547790192, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_MiddleClickAction: {fileID: 1046996383679019410, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_RightClickAction: {fileID: 5339933039639313033, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_ScrollWheelAction: {fileID: -1198972911976217090, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 1023095956881983466, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 5867855647716099132, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
-  m_DeselectOnBackgroundClick: 0
-  m_PointerBehavior: 0
 --- !u!114 &1733232874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25275,7 +25247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 590666038}
+  m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1733232875
@@ -28267,7 +28239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 278bb95c0e588914db58ff9a67320a2a, type: 3}
   m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 1733232873}
+  m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -32877,7 +32849,7 @@ MonoBehaviour:
   m_SphereCastRadius: 0.1
   m_RaycastMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_RaycastTriggerInteraction: 1
   m_HitClosestOnly: 0
   m_KeepSelectedTargetValid: 1
@@ -33361,7 +33333,7 @@ MonoBehaviour:
   m_SphereCastRadius: 0.1
   m_RaycastMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_RaycastTriggerInteraction: 1
   m_HitClosestOnly: 0
   m_KeepSelectedTargetValid: 1

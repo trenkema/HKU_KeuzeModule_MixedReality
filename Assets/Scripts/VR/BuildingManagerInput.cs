@@ -43,7 +43,7 @@ public class BuildingManagerInput : MonoBehaviour
 
     private void Start()
     {
-        shapeManager = GameManager_NonVR.Instance.shapeManager;
+        shapeManager = GameManager.Instance.shapeManager;
 
         areCollidersOn = true;
         currentColor = Color.white;
