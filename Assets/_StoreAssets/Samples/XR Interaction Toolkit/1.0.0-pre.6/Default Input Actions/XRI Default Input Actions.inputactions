@@ -992,6 +992,52 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Velocity",
+            "id": "8e78ed9b-0e9c-4288-b9c0-84d3df97ea40",
+            "actions": [
+                {
+                    "name": "LeftVelocity",
+                    "type": "Value",
+                    "id": "385fa344-47f8-4ab1-a11a-0696620de818",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "RightVelocity",
+                    "type": "Value",
+                    "id": "c81ba6fa-278a-447f-823e-0af1d38146e3",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "22545946-1520-425c-bd61-22f395365e7f",
+                    "path": "<OculusTouchController>{LeftHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftVelocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ed163d6-51ef-418c-95b7-68c884322198",
+                    "path": "<OculusTouchController>{RightHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightVelocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
