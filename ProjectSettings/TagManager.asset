@@ -12,7 +12,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - Grabbable
@@ -20,7 +20,7 @@ TagManager:
   - Body
   - Grab
   - GrabBodyCollider
-  - 
+  - Test
   - 
   - 
   - 

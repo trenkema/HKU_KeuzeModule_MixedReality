@@ -658,6 +658,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "TorqueRotationRight",
+                    "type": "Button",
+                    "id": "e1721349-37b9-4747-a1a5-241927fb50a1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -988,6 +996,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "InstantiateShape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e86e6c4-c8ab-4799-a692-cfe6394663c4",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "TorqueRotationRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
