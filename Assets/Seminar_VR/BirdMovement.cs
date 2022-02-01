@@ -14,10 +14,14 @@ public class BirdMovement : MonoBehaviour
     [Space(5)]
 
     [SerializeField] float minFlapControllerVelocity = -0.6f;
+    [SerializeField] float groundDistance;
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask groundLayers;
 
     [SerializeField] float upForce = 5f;
     [SerializeField] float forwardForce = 10f;
     [SerializeField] float steerForce = 10f;
+    [SerializeField] float maxUpVelocity = 25f;
 
     [Space(5)]
 
@@ -34,12 +38,9 @@ public class BirdMovement : MonoBehaviour
     [Space(5)]
     [SerializeField] float maxSteerControllerVelocity = 0.25f;
     [SerializeField] float minSteerControllerDifference = 0.6f;
+    [SerializeField] float steerSmooth = 5f;
 
     [Header("References")]
-    [SerializeField] InputActionReference torqueRotationRightReference;
-
-    [Space(5)]
-
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private CapsuleCollider grabBodyCollider;
 
@@ -72,6 +73,9 @@ public class BirdMovement : MonoBehaviour
     float glideLerpTimeElapsed;
     float glideLerpedValue;
 
+    float groundLerpTimeElapsed;
+    Vector3 groundLerpedValue;
+
     float steerDirection = 0f;
 
     private void Awake()
@@ -91,22 +95,29 @@ public class BirdMovement : MonoBehaviour
         Rotate();
 
         // Flapping Up
-        if (rightControllerVelocity.velocity.x < minFlapControllerVelocity)
+        if (rightControllerVelocity.velocity.y < minFlapControllerVelocity)
         {
-            float appliedForce = -rightControllerVelocity.velocity.x;
+            float appliedForce = -rightControllerVelocity.velocity.y;
 
             currentVelocity = forwardForce * appliedForce;
 
             rb.AddForce(Vector3.up * upForce * appliedForce);
+
+            Debug.Log("Velocity: " + rb.velocity.magnitude);
+
+            if (rb.velocity.magnitude > maxUpVelocity)
+                rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxUpVelocity);
         }
 
         // Gliding Check
-        if (Mathf.Abs(rightControllerVelocity.velocity.x) <= maxGlideControllerVelocity)
+        if (Mathf.Abs(rightControllerVelocity.velocity.x) <= maxGlideControllerVelocity && !isGrounded)
         {
-            float difference = leftController.position.z - rightController.position.z;
+            Vector3 difference = leftController.localPosition - rightController.localPosition;
 
-            if (Mathf.Abs(difference) < maxGlideControllerDifference)
+            if (Mathf.Abs(difference.y) <= maxGlideControllerDifference)
             {
+                Debug.Log("Gliding");
+
                 isGliding = true;
             }
             else
@@ -116,18 +127,22 @@ public class BirdMovement : MonoBehaviour
             isGliding = false;
 
         // Steering Check
-        if (Mathf.Abs(rightControllerVelocity.velocity.x) < maxSteerControllerVelocity)
+        if (Mathf.Abs(rightControllerVelocity.velocity.x) <= maxSteerControllerVelocity && !isGrounded)
         {
-            Vector3 difference = leftController.position - rightController.position;
+            Vector3 difference = leftController.localPosition - rightController.localPosition;
 
             Debug.Log("Difference: " + difference);
 
-            //if (Mathf.Abs(difference) > minSteerControllerDifference)
-            //{
-            //    isSteering = true;
-            //}
-            //else
-            //    isSteering = false;
+            if (Mathf.Abs(difference.y) >= minSteerControllerDifference)
+            {
+                Debug.Log("Steering");
+
+                steerDirection = difference.y;
+
+                isSteering = true;
+            }
+            else
+                isSteering = false;
         }
         else
             isSteering = false;
@@ -135,13 +150,26 @@ public class BirdMovement : MonoBehaviour
         // Forward Movement
         if (isGrounded)
         {
-            birdMovementInput = Vector3.Lerp(birdMovementInput, Vector3.zero, 0.5f * Time.deltaTime);
+            if (groundLerpTimeElapsed < 3f)
+            {
+                groundLerpedValue = Vector3.Lerp(birdMovementInput, Vector3.zero, glideLerpTimeElapsed / timeToReachMaxGlideVelocity);
+                groundLerpTimeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                groundLerpedValue = Vector3.zero;
+            }
+
+            birdMovementInput = groundLerpedValue;
+
             currentVelocity = 0f;
             currentGlidingVelocity = minGlidingVelocity;
             glideLerpTimeElapsed = 0f;
         }
-        else if (isGliding && !isGrounded) // Gliding
+        else if (isGliding && !isGrounded || isSteering && !isGrounded) // Gliding
         {
+            groundLerpTimeElapsed = 0f;
+
             if (glideLerpTimeElapsed < timeToReachMaxGlideVelocity)
             {
                 glideLerpedValue = Mathf.Lerp(currentGlidingVelocity, maxGlidingVelocity, glideLerpTimeElapsed / timeToReachMaxGlideVelocity);
@@ -154,76 +182,32 @@ public class BirdMovement : MonoBehaviour
 
             Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * glideLerpedValue;
 
-            birdMovementInput = Vector3.Lerp(birdMovementInput, input, 3.0f * Time.deltaTime);
+            //birdMovementInput = Vector3.Lerp(birdMovementInput, input, 3.0f * Time.deltaTime);
+            birdMovementInput = input;
 
             // Only add Force when falling
-            if (rb.velocity.y < 0f)
+            if (rb.velocity.y < 0.5f)
                 rb.AddForce(Vector3.up * upGlideForce);
         }
-        else if (isSteering && !isGrounded) // Steering
-        {
-
-        }
-        else // Diving
-        {
-            Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * currentVelocity;
-            birdMovementInput = Vector3.Lerp(birdMovementInput, input, 1.0f * Time.deltaTime);
-
-            currentGlidingVelocity = minGlidingVelocity;
-            glideLerpTimeElapsed = 0f;
-        }
-
-        #region oldCode
-        //if (Mathf.Abs(controllerVelocity.velocity.x) < maxGlideVelocity)
+        //else // Diving
         //{
-        //    float difference = leftController.position.y - rightController.position.y;
+        //    Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * currentVelocity;
+        //    birdMovementInput = Vector3.Lerp(birdMovementInput, input, 1.0f * Time.deltaTime);
 
-        //    Debug.Log("Difference: " + difference);
-
-        //    if (difference > 0)
-        //    {
-        //        //if (previousDirection != 0)
-        //        //{
-        //        //    rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
-
-        //        //    previousDirection = 0;
-        //        //}
-
-        //        //rb.AddTorque(rb.transform.right * steerForce);
-
-        //        //rb.velocity = new Vector3((transform.right * steerForce * Time.deltaTime).x, rb.velocity.y, rb.velocity.z);
-
-        //        //rb.AddForce(transform.right * steerForce);
-        //        //xrRig.transform.Rotate(0, steerSpeedRig, 0);
-        //        //rb.rotation = (Quaternion.Euler(rb.rotation.eulerAngles.x, rb.rotation.eulerAngles.y + steerForce, rb.rotation.eulerAngles.z));
-        //        rb.AddForce(Vector3.up * upGlideForce);
-        //    }
-        //    else
-        //    {
-        //        //if (previousDirection != 1)
-        //        //{
-        //        //    rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
-
-        //        //    previousDirection = 1;
-        //        //}
-
-        //        //rb.AddTorque(rb.transform.right * -steerForce);
-
-        //        //rb.velocity = new Vector3((-transform.right * steerForce * Time.deltaTime).x, rb.velocity.y, rb.velocity.z);
-        //        //rb.AddForce(-transform.right * steerForce);
-        //        //xrRig.transform.Rotate(0, -steerSpeedRig, 0);
-        //        //rb.rotation = (Quaternion.Euler(rb.rotation.eulerAngles.x, rb.rotation.eulerAngles.y + -steerForce, rb.rotation.eulerAngles.z));
-        //        rb.AddForce(Vector3.up * upGlideForce);
-        //    }
+        //    currentGlidingVelocity = minGlidingVelocity;
+        //    glideLerpTimeElapsed = 0f;
         //}
-
-        #endregion
     }
 
     private void FixedUpdate()
     {
         // Set height of Player to the actual height of Headset.
         bodyCollider.height = xrRig.cameraInRigSpaceHeight;
+        float groundCheckPosition = 1f - (bodyCollider.height / 2);
+
+        groundCheck.localPosition = new Vector3(0f, groundCheckPosition, 0f);
+
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundLayers);
 
         if (grabBodyCollider.gameObject.activeInHierarchy)
         {
@@ -245,17 +229,7 @@ public class BirdMovement : MonoBehaviour
         {
             Quaternion curRot = transform.rotation;
             Quaternion newRot = curRot *= Quaternion.Euler(0f, steerForce * steerDirection, 0f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * 2f);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, Time.fixedDeltaTime * steerSmooth);
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        isGrounded = true;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        isGrounded = false;
     }
 }
