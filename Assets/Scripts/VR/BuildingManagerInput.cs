@@ -167,7 +167,7 @@ public class BuildingManagerInput : MonoBehaviour
         if (context.phase == InputActionPhase.Started)
         {
             areCollidersOn = !areCollidersOn;
-            EventSystem<bool>.RaiseEvent(EventType.SHAPE_COLLIDING, areCollidersOn);
+            EventSystem<bool>.RaiseEvent(Event_Type.SHAPE_COLLIDING, areCollidersOn);
 
             shapeManager.ToggleCollisions(playerBodyCollider, grabBodyCollider, areCollidersOn);
 

@@ -39,7 +39,7 @@ public class PlayerController_NonVR : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        EventSystem<bool>.Subscribe(EventType.TOGGLE_CURSOR, ToggleCursor);
+        EventSystem<bool>.Subscribe(Event_Type.TOGGLE_CURSOR, ToggleCursor);
     }
 
     private void LateUpdate()
@@ -151,13 +151,13 @@ public class PlayerController_NonVR : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started)
         {
-            EventSystem<bool>.RaiseEvent(EventType.IS_SCALING, true);
+            EventSystem<bool>.RaiseEvent(Event_Type.IS_SCALING, true);
             isScaling = true;
         }
 
         if (context.phase == InputActionPhase.Canceled)
         {
-            EventSystem<bool>.RaiseEvent(EventType.IS_SCALING, false);
+            EventSystem<bool>.RaiseEvent(Event_Type.IS_SCALING, false);
             isScaling = false;
         }
     }
@@ -166,13 +166,13 @@ public class PlayerController_NonVR : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started)
         {
-            EventSystem<bool>.RaiseEvent(EventType.IS_ROTATING, true);
+            EventSystem<bool>.RaiseEvent(Event_Type.IS_ROTATING, true);
             isRotating = true;
         }
 
         if (context.phase == InputActionPhase.Canceled)
         {
-            EventSystem<bool>.RaiseEvent(EventType.IS_ROTATING, false);
+            EventSystem<bool>.RaiseEvent(Event_Type.IS_ROTATING, false);
             isRotating = false;
         }
     }

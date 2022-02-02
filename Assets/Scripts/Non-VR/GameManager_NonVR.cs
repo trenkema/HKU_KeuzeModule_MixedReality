@@ -33,7 +33,7 @@ public class GameManager_NonVR : MonoBehaviour
 
         areCollidersOn = true;
 
-        EventSystem<bool>.Subscribe(EventType.SHAPE_COLLIDING, SetShapeColliding);
+        EventSystem<bool>.Subscribe(Event_Type.SHAPE_COLLIDING, SetShapeColliding);
     }
 
     private void SetShapeColliding(bool _areCollidersOn)

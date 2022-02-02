@@ -69,8 +69,8 @@ public class BuildingManagerInput_NonVR : MonoBehaviour
         GameManager_NonVR.Instance.SetShapeColor(currentShapeIndex, currentColor);
 
         cam = Camera.main;
-        EventSystem<bool>.Subscribe(EventType.IS_SCALING, ToggleScalingController);
-        EventSystem<bool>.Subscribe(EventType.IS_ROTATING, ToggleRotatingController);
+        EventSystem<bool>.Subscribe(Event_Type.IS_SCALING, ToggleScalingController);
+        EventSystem<bool>.Subscribe(Event_Type.IS_ROTATING, ToggleRotatingController);
     }
 
     private void Update()
@@ -299,7 +299,7 @@ public class BuildingManagerInput_NonVR : MonoBehaviour
         if (context.phase == InputActionPhase.Started)
         {
             areCollidersOn = !areCollidersOn;
-            EventSystem<bool>.RaiseEvent(EventType.SHAPE_COLLIDING, areCollidersOn);
+            EventSystem<bool>.RaiseEvent(Event_Type.SHAPE_COLLIDING, areCollidersOn);
 
             shapeManager.ToggleCollisions(playerBodyCollider, grabBodyCollider, areCollidersOn);
         }

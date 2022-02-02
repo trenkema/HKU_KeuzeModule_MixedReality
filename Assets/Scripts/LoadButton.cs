@@ -13,11 +13,11 @@ public class LoadButton : MonoBehaviour, ISelectHandler
     {
         if (useParent)
         {
-            EventSystem<Transform>.RaiseEvent(EventType.LOAD_BUTTON_SELECT, parentTransform);
+            EventSystem<Transform>.RaiseEvent(Event_Type.LOAD_BUTTON_SELECT, parentTransform);
         }
         else
         {
-            EventSystem<RectTransform>.RaiseEvent(EventType.LOAD_BUTTON_SELECT, GetComponent<RectTransform>());
+            EventSystem<RectTransform>.RaiseEvent(Event_Type.LOAD_BUTTON_SELECT, GetComponent<RectTransform>());
         }
     }
 }

@@ -35,7 +35,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        EventSystem<Transform>.Subscribe(EventType.LOAD_BUTTON_SELECT, ScrollReposition);
+        EventSystem<Transform>.Subscribe(Event_Type.LOAD_BUTTON_SELECT, ScrollReposition);
     }
 
     public void ScrollReposition(Transform _objPosition)
