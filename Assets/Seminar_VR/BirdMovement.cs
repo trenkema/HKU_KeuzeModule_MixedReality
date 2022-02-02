@@ -7,12 +7,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class BirdMovement : MonoBehaviour
 {
     [Header("Settings")]
-    [Range(0, 360)] [SerializeField] float defaultAngle = 25f;
-    [Range(0, 360)] [SerializeField] float minAngle = 50f;
-    [Range(0, 360)] [SerializeField] float maxAngle = 90f;
-
-    [Space(5)]
-
     [SerializeField] float minFlapControllerVelocity = -0.6f;
     [SerializeField] float groundDistance;
     [SerializeField] Transform groundCheck;
@@ -48,15 +42,14 @@ public class BirdMovement : MonoBehaviour
 
     [SerializeField] Transform leftController;
     [SerializeField] Transform rightController;
-    [SerializeField] ControllerVelocity rightControllerVelocity;
+    [SerializeField] Controller leftControllerVelocity;
+    [SerializeField] Controller rightControllerVelocity;
 
     [Space(5)]
 
     [SerializeField] Transform ownCamera;
 
     Vector3 birdMovementInput;
-
-    float currentVelocity = 0f;
 
     float currentGlidingVelocity = 0;
 
@@ -99,11 +92,9 @@ public class BirdMovement : MonoBehaviour
         {
             float appliedForce = -rightControllerVelocity.velocity.y;
 
-            currentVelocity = forwardForce * appliedForce;
-
             rb.AddForce(Vector3.up * upForce * appliedForce);
 
-            Debug.Log("Velocity: " + rb.velocity.magnitude);
+            //Debug.Log("Velocity: " + rb.velocity.magnitude);
 
             if (rb.velocity.magnitude > maxUpVelocity)
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxUpVelocity);
@@ -130,8 +121,6 @@ public class BirdMovement : MonoBehaviour
         if (Mathf.Abs(rightControllerVelocity.velocity.x) <= maxSteerControllerVelocity && !isGrounded)
         {
             Vector3 difference = leftController.localPosition - rightController.localPosition;
-
-            Debug.Log("Difference: " + difference);
 
             if (Mathf.Abs(difference.y) >= minSteerControllerDifference)
             {
@@ -162,7 +151,6 @@ public class BirdMovement : MonoBehaviour
 
             birdMovementInput = groundLerpedValue;
 
-            currentVelocity = 0f;
             currentGlidingVelocity = minGlidingVelocity;
             glideLerpTimeElapsed = 0f;
         }
@@ -182,11 +170,10 @@ public class BirdMovement : MonoBehaviour
 
             Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * glideLerpedValue;
 
-            //birdMovementInput = Vector3.Lerp(birdMovementInput, input, 3.0f * Time.deltaTime);
             birdMovementInput = input;
 
             // Only add Force when falling
-            if (rb.velocity.y < 0.5f)
+            if (rb.velocity.y < -0.5f)
                 rb.AddForce(Vector3.up * upGlideForce);
         }
         //else // Diving

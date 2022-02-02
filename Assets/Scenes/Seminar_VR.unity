@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.08049316, g: 0.0998791, b: 0.30126268, a: 1}
+  m_IndirectSpecularColor: {r: 0.08040362, g: 0.099779695, b: 0.30100197, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -47551,7 +47551,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5582993145558406943}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de5e5ce9f2e3bcf4693cb8d87f6c7cc3, type: 3}
   m_Name: 
@@ -47567,6 +47567,17 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
     m_Reference: {fileID: -8017592413943643866, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  positionProperty:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Position Property
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: f235bf0d-ccbe-4202-9155-a7e8ed4affad
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -2024308242397127297, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!135 &5582993145566638944
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -47713,6 +47724,17 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
     m_Reference: {fileID: -382069711569463621, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  positionProperty:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Position Property
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: d9c9c3cc-330b-45d4-a297-7f1f7f2cd5da
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -3326005586356538449, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!114 &5582993145566638957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48099,6 +48121,7 @@ MonoBehaviour:
   grabBodyCollider: {fileID: 5582993146206266383}
   leftController: {fileID: 5582993145558406942}
   rightController: {fileID: 5582993145566638946}
+  leftControllerVelocity: {fileID: 5582993145558406944}
   rightControllerVelocity: {fileID: 5582993145566638948}
   ownCamera: {fileID: 5582993147007631445}
 --- !u!54 &5582993145763603792
