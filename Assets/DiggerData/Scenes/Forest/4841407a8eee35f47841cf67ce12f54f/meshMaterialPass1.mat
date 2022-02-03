@@ -68,8 +68,8 @@ Material:
         m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0}
     - _Splat3:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 695c0ed5e740a5a41ba6d353f8ef44a7, type: 3}
+        m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
@@ -85,11 +85,11 @@ Material:
     - _NormalScale1: 1
     - _NormalScale2: 1
     - _NormalScale3: 1
-    - _NumLayersCount: 7
+    - _NumLayersCount: 10
     - _Smoothness0: 0
     - _Smoothness1: 0
     - _Smoothness2: 0
-    - _Smoothness3: 0.5
+    - _Smoothness3: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseRemapScale0: {r: 1, g: 1, b: 1, a: 1}

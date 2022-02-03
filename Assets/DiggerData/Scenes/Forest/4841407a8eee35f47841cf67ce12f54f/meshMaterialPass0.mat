@@ -87,7 +87,7 @@ Material:
     - _NormalScale1: 1
     - _NormalScale2: 1
     - _NormalScale3: 1
-    - _NumLayersCount: 7
+    - _NumLayersCount: 10
     - _Smoothness0: 0
     - _Smoothness1: 0
     - _Smoothness2: 0
