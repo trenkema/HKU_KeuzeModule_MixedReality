@@ -6,11 +6,17 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class BirdMovement : MonoBehaviour
 {
+    [HideInInspector] public bool canFlyForwards = false;
+    [HideInInspector] public bool hasStarted = false;
+
     [Header("Settings")]
+    [SerializeField] float delayAtStart = 5f;
+
     [SerializeField] float minFlapControllerVelocity = -0.6f;
     [SerializeField] float groundDistance;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask groundLayers;
+    [SerializeField] float timeToReachGroundVelocity = 3f;
 
     [SerializeField] float upForce = 5f;
     [SerializeField] float forwardForce = 10f;
@@ -35,8 +41,7 @@ public class BirdMovement : MonoBehaviour
     [SerializeField] float steerSmooth = 5f;
 
     [Header("References")]
-    [SerializeField] private CapsuleCollider bodyCollider;
-    [SerializeField] private CapsuleCollider grabBodyCollider;
+    [SerializeField] private SphereCollider bodyCollider;
 
     [Space(5)]
 
@@ -59,6 +64,8 @@ public class BirdMovement : MonoBehaviour
 
     bool isSteering = false;
 
+    bool canMove = false;
+
     Rigidbody rb;
 
     XRRig xrRig;
@@ -80,12 +87,23 @@ public class BirdMovement : MonoBehaviour
         rb.inertiaTensorRotation = Quaternion.identity;
 
         currentGlidingVelocity = minGlidingVelocity;
+
+        canMove = false;
+    }
+
+    private void Start()
+    {
+        Invoke("CanMove", delayAtStart);
     }
 
     private void Update()
     {
-        // Move To FixedUpdate When Building
-        Rotate();
+        if (!canMove)
+        {
+            rb.velocity = Vector3.zero;
+
+            return;
+        }
 
         // Flapping Up
         if (rightControllerVelocity.velocity.y < minFlapControllerVelocity)
@@ -93,8 +111,6 @@ public class BirdMovement : MonoBehaviour
             float appliedForce = -rightControllerVelocity.velocity.y;
 
             rb.AddForce(Vector3.up * upForce * appliedForce);
-
-            //Debug.Log("Velocity: " + rb.velocity.magnitude);
 
             if (rb.velocity.magnitude > maxUpVelocity)
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxUpVelocity);
@@ -124,7 +140,7 @@ public class BirdMovement : MonoBehaviour
 
             if (Mathf.Abs(difference.y) >= minSteerControllerDifference)
             {
-                Debug.Log("Steering");
+                Debug.Log("Steering: " + difference.y);
 
                 steerDirection = difference.y;
 
@@ -134,14 +150,17 @@ public class BirdMovement : MonoBehaviour
                 isSteering = false;
         }
         else
+        {
+            steerDirection = 0f;
             isSteering = false;
+        }
 
         // Forward Movement
         if (isGrounded)
         {
             if (groundLerpTimeElapsed < 3f)
             {
-                groundLerpedValue = Vector3.Lerp(birdMovementInput, Vector3.zero, glideLerpTimeElapsed / timeToReachMaxGlideVelocity);
+                groundLerpedValue = Vector3.Lerp(birdMovementInput, Vector3.zero, glideLerpTimeElapsed / timeToReachGroundVelocity);
                 groundLerpTimeElapsed += Time.deltaTime;
             }
             else
@@ -188,26 +207,29 @@ public class BirdMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Set height of Player to the actual height of Headset.
-        bodyCollider.height = xrRig.cameraInRigSpaceHeight;
-        float groundCheckPosition = 1f - (bodyCollider.height / 2);
-
-        groundCheck.localPosition = new Vector3(0f, groundCheckPosition, 0f);
-
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundLayers);
 
-        if (grabBodyCollider.gameObject.activeInHierarchy)
-        {
-            grabBodyCollider.height = xrRig.cameraInRigSpaceHeight;
-        }
-
         MoveBird();
+
+        Rotate();
+    }
+
+    private void CanMove()
+    {
+        canMove = true;
     }
 
     private void MoveBird()
     {
+        if (!canMove)
+            return;
+
         Vector3 up = new Vector3(0f, rb.velocity.y, 0f);
-        rb.velocity = birdMovementInput + up;
+
+        if (canFlyForwards)
+            rb.velocity = birdMovementInput + up;
+        else
+            rb.velocity = up;
     }
 
     private void Rotate()
@@ -218,5 +240,21 @@ public class BirdMovement : MonoBehaviour
             Quaternion newRot = curRot *= Quaternion.Euler(0f, steerForce * steerDirection, 0f);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, Time.fixedDeltaTime * steerSmooth);
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!hasStarted)
+            return;
+
+        canFlyForwards = false;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!hasStarted)
+            return;
+
+        canFlyForwards = true;
     }
 }

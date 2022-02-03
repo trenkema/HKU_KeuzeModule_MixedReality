@@ -5,15 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainNonVR.unity
     guid: 2d043a3a482b965418316e9e58b7d822
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Forest_NonVR.unity
     guid: dfad6e0748601a449b99cb2e49188a56
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Forest_VR.unity
     guid: 8fb7f6f6b369215409df7c416e8a33ec
+  - enabled: 1
+    path: Assets/Seminar_VR/Forest.unity
+    guid: 0813c274db97f8d48a5553088cd2aa46
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 2973aeed19c8ca241990e757340c7600, type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 280f6fb0d42974447a0da42ec23ee2a3, type: 2}
