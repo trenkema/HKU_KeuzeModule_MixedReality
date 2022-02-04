@@ -8,10 +8,13 @@ public class EnableForwardForce : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        birdMovement.canFlyForwards = true;
+        if (other.tag == "Player")
+        {
+            birdMovement.canFlyForwards = true;
 
-        birdMovement.hasStarted = true;
+            birdMovement.hasStarted = true;
 
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
     }
 }

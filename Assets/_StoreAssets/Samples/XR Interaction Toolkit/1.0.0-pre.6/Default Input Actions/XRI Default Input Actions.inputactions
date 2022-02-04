@@ -658,6 +658,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "ResetPoint",
+                    "type": "Button",
+                    "id": "bf07fe19-d41c-42ba-a0b7-f2eb96f26fff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -988,6 +996,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "InstantiateShape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6bfdd96-13e0-422c-8ebf-bd6d1489596b",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "ResetPoint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

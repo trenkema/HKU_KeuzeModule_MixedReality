@@ -6,10 +6,14 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class BirdMovement : MonoBehaviour
 {
-    [HideInInspector] public bool canFlyForwards = false;
-    [HideInInspector] public bool hasStarted = false;
+    public bool canFlyForwards = false;
+    public bool hasStarted = false;
+    public bool canMove = false;
 
     [Header("Settings")]
+    [SerializeField] Transform resetPoint;
+    [SerializeField] InputActionReference resetPointReference;
+
     [SerializeField] float delayAtStart = 5f;
 
     [SerializeField] float minFlapControllerVelocity = -0.6f;
@@ -22,6 +26,10 @@ public class BirdMovement : MonoBehaviour
     [SerializeField] float forwardForce = 10f;
     [SerializeField] float steerForce = 10f;
     [SerializeField] float maxUpVelocity = 25f;
+
+    [Space(5)]
+    [SerializeField] float maxBrakeRotation = 0.25f;
+    [SerializeField] float brakeSpeed = 1f;
 
     [Space(5)]
 
@@ -64,7 +72,7 @@ public class BirdMovement : MonoBehaviour
 
     bool isSteering = false;
 
-    bool canMove = false;
+    bool isBraking = false;
 
     Rigidbody rb;
 
@@ -93,6 +101,8 @@ public class BirdMovement : MonoBehaviour
 
     private void Start()
     {
+        resetPointReference.action.performed += ResetPoint;
+
         Invoke("CanMove", delayAtStart);
     }
 
@@ -104,6 +114,14 @@ public class BirdMovement : MonoBehaviour
 
             return;
         }
+
+        // Braking Check
+        if (Mathf.Abs(rightControllerVelocity.rotation.x) < maxBrakeRotation)
+        {
+            isBraking = true;
+        }
+        else
+            isBraking = false;
 
         // Flapping Up
         if (rightControllerVelocity.velocity.y < minFlapControllerVelocity)
@@ -175,34 +193,43 @@ public class BirdMovement : MonoBehaviour
         }
         else if (isGliding && !isGrounded || isSteering && !isGrounded) // Gliding
         {
-            groundLerpTimeElapsed = 0f;
-
-            if (glideLerpTimeElapsed < timeToReachMaxGlideVelocity)
+            if (!isBraking)
             {
-                glideLerpedValue = Mathf.Lerp(currentGlidingVelocity, maxGlidingVelocity, glideLerpTimeElapsed / timeToReachMaxGlideVelocity);
-                glideLerpTimeElapsed += Time.deltaTime;
+                groundLerpTimeElapsed = 0f;
+
+                if (glideLerpTimeElapsed < timeToReachMaxGlideVelocity)
+                {
+                    glideLerpedValue = Mathf.Lerp(currentGlidingVelocity, maxGlidingVelocity, glideLerpTimeElapsed / timeToReachMaxGlideVelocity);
+                    glideLerpTimeElapsed += Time.deltaTime;
+                }
+                else
+                {
+                    glideLerpedValue = maxGlidingVelocity;
+                }
+
+                Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * glideLerpedValue;
+
+                currentGlidingVelocity = glideLerpedValue;
+
+                birdMovementInput = input;
             }
             else
             {
-                glideLerpedValue = maxGlidingVelocity;
+                // Braking
+                groundLerpTimeElapsed = 0f;
+                glideLerpTimeElapsed = 0f;
+
+                currentGlidingVelocity -= currentGlidingVelocity / brakeSpeed;
+
+                Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * currentGlidingVelocity;
+
+                birdMovementInput = input;
             }
 
-            Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * glideLerpedValue;
-
-            birdMovementInput = input;
-
             // Only add Force when falling
-            if (rb.velocity.y < -0.5f)
+            if (rb.velocity.y < -0.5f && !isBraking)
                 rb.AddForce(Vector3.up * upGlideForce);
         }
-        //else // Diving
-        //{
-        //    Vector3 input = (transform.forward * 1f + transform.right * 0f).normalized * currentVelocity;
-        //    birdMovementInput = Vector3.Lerp(birdMovementInput, input, 1.0f * Time.deltaTime);
-
-        //    currentGlidingVelocity = minGlidingVelocity;
-        //    glideLerpTimeElapsed = 0f;
-        //}
     }
 
     private void FixedUpdate()
@@ -211,6 +238,11 @@ public class BirdMovement : MonoBehaviour
 
         MoveBird();
 
+        //Rotate();
+    }
+
+    private void LateUpdate()
+    {
         Rotate();
     }
 
@@ -239,22 +271,39 @@ public class BirdMovement : MonoBehaviour
             Quaternion curRot = transform.rotation;
             Quaternion newRot = curRot *= Quaternion.Euler(0f, steerForce * steerDirection, 0f);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, Time.fixedDeltaTime * steerSmooth);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, newRot, Time.fixedDeltaTime);
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    public void ResetPoint(InputAction.CallbackContext _context)
     {
-        if (!hasStarted)
-            return;
-
-        canFlyForwards = false;
+        if (canFlyForwards)
+        {
+            transform.position = resetPoint.position;
+        }    
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
         if (!hasStarted)
             return;
 
-        canFlyForwards = true;
+        if (collision.gameObject.tag == "Ground")
+        {
+            Debug.Log("HIT");
+
+            canFlyForwards = false;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (!hasStarted)
+            return;
+
+        if (collision.gameObject.tag == "Ground")
+        {
+            canFlyForwards = true;
+        }
     }
 }
