@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.SceneManagement;
 
 public class BirdMovement : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class BirdMovement : MonoBehaviour
     [Header("Settings")]
     [SerializeField] Transform resetPoint;
     [SerializeField] InputActionReference resetPointReference;
+    [SerializeField] InputActionReference restartReference;
 
     [SerializeField] float delayAtStart = 5f;
 
@@ -44,9 +46,11 @@ public class BirdMovement : MonoBehaviour
     [SerializeField] float maxGlideControllerDifference = 0.2f;
 
     [Space(5)]
+    [SerializeField] float cameraSteerAngle = 10f;
     [SerializeField] float maxSteerControllerVelocity = 0.25f;
     [SerializeField] float minSteerControllerDifference = 0.6f;
     [SerializeField] float steerSmooth = 5f;
+    [SerializeField] float cameraSteerSmooth = 10f;
 
     [Header("References")]
     [SerializeField] private SphereCollider bodyCollider;
@@ -76,8 +80,6 @@ public class BirdMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    XRRig xrRig;
-
     float glideLerpTimeElapsed;
     float glideLerpedValue;
 
@@ -88,7 +90,6 @@ public class BirdMovement : MonoBehaviour
 
     private void Awake()
     {
-        xrRig = GetComponent<XRRig>();
         rb = GetComponent<Rigidbody>();
 
         rb.centerOfMass = Vector3.zero;
@@ -102,6 +103,7 @@ public class BirdMovement : MonoBehaviour
     private void Start()
     {
         resetPointReference.action.performed += ResetPoint;
+        restartReference.action.performed += Restart;
 
         Invoke("CanMove", delayAtStart);
     }
@@ -141,8 +143,6 @@ public class BirdMovement : MonoBehaviour
 
             if (Mathf.Abs(difference.y) <= maxGlideControllerDifference)
             {
-                Debug.Log("Gliding");
-
                 isGliding = true;
             }
             else
@@ -158,14 +158,14 @@ public class BirdMovement : MonoBehaviour
 
             if (Mathf.Abs(difference.y) >= minSteerControllerDifference)
             {
-                Debug.Log("Steering: " + difference.y);
-
                 steerDirection = difference.y;
 
                 isSteering = true;
             }
             else
+            {
                 isSteering = false;
+            }
         }
         else
         {
@@ -213,7 +213,7 @@ public class BirdMovement : MonoBehaviour
 
                 birdMovementInput = input;
             }
-            else
+            else if (isBraking && !isSteering)
             {
                 // Braking
                 groundLerpTimeElapsed = 0f;
@@ -290,8 +290,6 @@ public class BirdMovement : MonoBehaviour
 
         if (collision.gameObject.tag == "Ground")
         {
-            Debug.Log("HIT");
-
             canFlyForwards = false;
         }
     }
@@ -305,5 +303,10 @@ public class BirdMovement : MonoBehaviour
         {
             canFlyForwards = true;
         }
+    }
+
+    public void Restart(InputAction.CallbackContext _context)
+    {
+        SceneManager.LoadScene(0);
     }
 }

@@ -10,7 +10,17 @@ public class SightSeeingManager : MonoBehaviour
 
     [SerializeField] AudioClip successSound;
 
+    [SerializeField] Animator transitionAnimator;
+
+    [SerializeField] GameObject[] scenes;
+
+    [SerializeField] GameObject player;
+
+    [SerializeField] Transform[] spawnPoints;
+
     int index = 0;
+
+    int sceneIndex = 0;
 
     private void Start()
     {
@@ -20,6 +30,13 @@ public class SightSeeingManager : MonoBehaviour
         }
 
         sightSeeingArrows[0].SetActive(true);
+
+        foreach (var scene in scenes)
+        {
+            scene.SetActive(false);
+        }
+
+        scenes[0].SetActive(true);
     }
 
     public void NextSightSeeing()
@@ -42,6 +59,24 @@ public class SightSeeingManager : MonoBehaviour
 
     private void NextTransition()
     {
-        Debug.Log("Next Transition");
+        transitionAnimator.Play("FadeOut");
+
+        StartCoroutine(SwitchScene());
+    }
+
+    private IEnumerator SwitchScene()
+    {
+        yield return new WaitForSeconds(1f);
+
+        scenes[sceneIndex].SetActive(false);
+
+        sceneIndex++;
+
+        scenes[sceneIndex].SetActive(true);
+
+        player.transform.position = spawnPoints[sceneIndex].position;
+        player.transform.rotation = spawnPoints[sceneIndex].rotation;
+
+        transitionAnimator.SetTrigger("FadeIn");
     }
 }
